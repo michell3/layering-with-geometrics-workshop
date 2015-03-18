@@ -209,7 +209,7 @@ def keyPressed():
         if (currentAmount > 200):
             changeAmount(200)
         print currentAmount
-    elif (0 <= int(key) < len(palette)): 
+    elif (key.isdigit() and 0 <= int(key) < len(palette)): 
         changeFillColor(palette[int(key)])
     elif (keyCode == UP):
         changeOpacity(currentOpacity + 10)

@@ -17,21 +17,34 @@ def setup(): #called once at the beginning of the program
     
     #make a palette list so we have some predefined colors
     global palette
-    palette = [color(15, 15, 75),  #dark blue
-               color(230, 0, 140), #magenta
-               color(235, 175, 0), #gold
-               color(255)]         #white
+    palette = [color(15, 15, 75),   #dark blue
+               color(35, 45, 100), #light blue
+               color(230, 0, 140),  #magenta
+               color(235, 175, 0),  #gold
+               color(255)]          #white
     
     #default settings
-    changeOpacity(50)
+    changeOpacity(30)
     changeFillColor(255)
     changeStrokeColor(255)
-    changeStrokeWeight(0)
+    changeStrokeWeight(1)
     changeFunction(drawCircle) #for the brush
     
     background(palette[0])     #sets the background to white
     
+    #draw only once in setup
+    #iterate through all but the first color indices
+    for col in xrange(1,len(palette)):
+        changeFillColor(palette[col])
+        
+        #make y position a function of the color index
+        y = (col - 0.5) * float(height)/(len(palette)-1)
+        for x in xrange(0, width, 10):
+            #call the function across the width of the canvas
+            drawMultiple(drawSquare, x, y, 50, 1, 100)
+    
 def draw(): #called at 60 frames per second, allows for interaction
+    pass
     
 #     fill(palette[0])
     
@@ -44,42 +57,33 @@ def draw(): #called at 60 frames per second, allows for interaction
 #     if (mousePressed):
 #         drawHexagon(mouseX, mouseY, 100, 50)
     
-    fill(palette[0], 10)
-    rect(width/2, height/2, width, height)
+#     #refreshing background
+#     fill(palette[0], 20)
+#     rect(width/2, height/2, width, height)
 
-    for col in xrange(len(palette)):
-        changeFillColor(palette[col])
-        y = (col + 0.5) * float(height)/len(palette)
-        for x in xrange(0, width, 10):
-            drawMultiple(drawHexagon, x, y, 50 * sin(TWO_PI/frameRate), 1, 50)
-
-############# Examples #############
-
-def forLoopDemo(function, r, opacity, amount, randomness, numRows):
-    offset = 10
-    colorChange = 200.0/numRows
-    
-    for i in xrange(1, numRows+1):
-        newOpacity = float(i)/numRows * opacity
-        newR = float(i)/numRows * r
-        y = float(i)/numRows * height + offset
-        
-        changeOpacity(newOpacity)
-        changeFillColor(color(colorChange * i, 50, 255 - colorChange * i))
-        
-        for x in xrange(0, width, 10):
-            drawMultiple(function, x, y, newR, amount, randomness)
+#     for col in xrange(1,len(palette)):
+#         changeFillColor(palette[col])
+#         y = (col - 0.5) * float(height)/(len(palette)-1)
+#         for x in xrange(0, width, 10):
+#             drawMultiple(drawSquare, x, y, 50 * sin(TWO_PI/frameRate), 1, 50)
 
 ############# Draw Multiple Functions #############
 
 def drawMultiple(function, x, y, r, amount, randomness):
+    #randomness can be replaced with noise or a sinusoidal function
     for i in xrange(amount):
         x2 = x + random(-randomness, randomness)
         y2 = y + random(-randomness, randomness)
         r2 = r + random(-randomness, randomness)/3.0
+        #the '/3.0' is just a preference of mine...
         function(x2, y2, r2)
 
 ########### Change Setting Functions ###########
+# We kind of have to use global variable for specially
+# defined shapes.
+# If you have more keyboard or mouse interactions,
+# you will probably need more global variables to
+# control overall settings
 
 def changeOpacity(opacity):
     global currentOpacity
@@ -100,6 +104,7 @@ def changeStrokeWeight(weight):
     currentStrokeWeight = weight
     strokeWeight(currentStrokeWeight)
 
+# Just for the mouse interaction
 def changeFunction(function):
     global currentFunction
     currentFunction = function
@@ -147,7 +152,7 @@ def keyPressed():
         changeFunction(drawSquare)
     elif (key == 'h'):
         changeFunction(drawHexagon)
-    elif (0 <= int(key) < len(palette)): 
+    elif (key.isdigit() and 0 <= int(key) < len(palette)): 
         changeFillColor(palette[int(key)])
     elif (keyCode == UP):
         changeOpacity(currentOpacity + 10)
@@ -161,4 +166,5 @@ def keyPressed():
         print currentOpacity
 
 def mousePressed():
+    changeFillColor(currentFillColor)
     drawMultiple(currentFunction, mouseX, mouseY, 10, 20, 50)
