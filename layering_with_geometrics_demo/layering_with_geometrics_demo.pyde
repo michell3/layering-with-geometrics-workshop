@@ -7,6 +7,15 @@
 # PyProcessing Reference
 # http://py.processing.org/reference/
 
+# For the brush
+# Press 0 through len(palette)-1 to change color
+# Press 'c' for circles
+# Press 'C' for concentric circles
+# Press 's' for squares
+# Press 'h' for hexagons
+# Press DOWN to decrease opacity
+# Press UP to increase opacity
+
 def setup(): #called once at the beginning of the program
 
     #setting functions that are applied to every piece of code until overwritten
@@ -18,7 +27,7 @@ def setup(): #called once at the beginning of the program
     #make a palette list so we have some predefined colors
     global palette
     palette = [color(15, 15, 75),   #dark blue
-               color(35, 45, 100), #light blue
+               color(35, 45, 100),  #lighter blue
                color(230, 0, 140),  #magenta
                color(235, 175, 0),  #gold
                color(255)]          #white
@@ -30,18 +39,13 @@ def setup(): #called once at the beginning of the program
     changeStrokeWeight(1)
     changeFunction(drawCircle) #for the brush
     
-    background(palette[0])     #sets the background to white
-    
-    #draw only once in setup
-    #iterate through all but the first color indices
-    for col in xrange(1,len(palette)):
-        changeFillColor(palette[col])
-        
-        #make y position a function of the color index
-        y = (col - 0.5) * float(height)/(len(palette)-1)
-        for x in xrange(0, width, 10):
-            #call the function across the width of the canvas
-            drawMultiple(drawSquare, x, y, 50, 1, 100)
+    #make the background a random color
+    background(color(random(255), random(255), random(255)))
+    randomColors(drawSquare, 20, 1, 10, 10, 6)
+
+#     #make the background the first palette color
+#     background(palette[0])
+#     paletteColors(drawConcentricCircle, 50, 1, 150, 10)
     
 def draw(): #called at 60 frames per second, allows for interaction
     pass
@@ -60,12 +64,36 @@ def draw(): #called at 60 frames per second, allows for interaction
 #     #refreshing background
 #     fill(palette[0], 20)
 #     rect(width/2, height/2, width, height)
+# 
+#     paletteColors(drawSquare, 50 * sin(TWO_PI/frameRate), 1, 50, 10)
 
-#     for col in xrange(1,len(palette)):
-#         changeFillColor(palette[col])
-#         y = (col - 0.5) * float(height)/(len(palette)-1)
-#         for x in xrange(0, width, 10):
-#             drawMultiple(drawSquare, x, y, 50 * sin(TWO_PI/frameRate), 1, 50)
+############# Draw Everything Functions #############
+
+def paletteColors(function, r, amount, randomness, xStep):
+    
+    for col in xrange(1,len(palette)):
+        changeFillColor(palette[col])
+        
+        #make y position a function of the color index
+        y = (col - 0.5) * float(height)/(len(palette)-1)
+        
+        for x in xrange(0, width, xStep):
+            #call the function across the width of the canvas with a step
+            #of xStep
+            drawMultiple(function, x, y, r, amount, randomness)
+
+def randomColors(function, r, amount, randomness, xStep, numRows):
+    
+    for row in xrange(1, numRows):
+        changeFillColor(color(random(255), random(255), random(255)))
+        
+        #make y position a function of the row number
+        y = (row - 0.5) * float(height)/(numRows-1)
+        
+        for x in xrange(0, width, xStep):
+            #call the function across the width of the canvas with a step of
+            #xStep
+            drawMultiple(function, x, y, r, amount, randomness)
 
 ############# Draw Multiple Functions #############
 

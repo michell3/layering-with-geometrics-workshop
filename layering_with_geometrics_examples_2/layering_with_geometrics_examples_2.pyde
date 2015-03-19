@@ -46,14 +46,14 @@ def setup():
     changeFunction(drawCircle) #for the brush
     
     #background drawings
-#     background(palette[0])
-#     changeStrokeColor(palette[0])
-#     forLoopDemo(drawConcentricCircle, 40, 80, 3, 150, 6)
-
     background(palette[0])
-    changeOpacity(80)
-    changeStrokeWeight(0)
-    rotationDemo(drawHexagon, 40, 80, 30, 10, 8)
+    changeStrokeColor(palette[0])
+    forLoopDemo(drawConcentricCircle, 40, 80, 3, 150, 6)
+
+#     background(palette[0])
+#     changeOpacity(80)
+#     changeStrokeWeight(0)
+#     rotationDemo(drawHexagon, 40, 80, 30, 10, 8)
     
 def draw():
     pass
